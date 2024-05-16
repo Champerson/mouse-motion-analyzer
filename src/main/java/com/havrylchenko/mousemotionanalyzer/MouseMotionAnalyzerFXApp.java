@@ -10,7 +10,6 @@ import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 
-import java.io.IOException;
 
 @SpringBootApplication
 public class MouseMotionAnalyzerFXApp extends Application {
@@ -20,9 +19,9 @@ public class MouseMotionAnalyzerFXApp extends Application {
     @Override
     public void init() {
         ApplicationContextInitializer<GenericApplicationContext> initializer =
-                context -> {
-                    context.registerBean(Application.class, () -> MouseMotionAnalyzerFXApp.this);
-                    context.registerBean(Parameters.class, this::getParameters); // for demonstration, not really needed
+                appContext -> {
+                    appContext.registerBean(Application.class, () -> MouseMotionAnalyzerFXApp.this);
+                    appContext.registerBean(Parameters.class, this::getParameters); // for demonstration, not really needed
                 };
         this.context = new SpringApplicationBuilder()
                 .sources(MouseMotionAnalyzerApp.class)
