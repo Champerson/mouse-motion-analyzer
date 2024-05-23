@@ -11,7 +11,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.havrylchenko.mousemotionanalyzer")
 public class MouseMotionAnalyzerFXApp extends Application {
 
     private ConfigurableApplicationContext context;
@@ -21,7 +21,7 @@ public class MouseMotionAnalyzerFXApp extends Application {
         ApplicationContextInitializer<GenericApplicationContext> initializer =
                 appContext -> {
                     appContext.registerBean(Application.class, () -> MouseMotionAnalyzerFXApp.this);
-                    appContext.registerBean(Parameters.class, this::getParameters); // for demonstration, not really needed
+                    appContext.registerBean(Parameters.class, this::getParameters);
                 };
         this.context = new SpringApplicationBuilder()
                 .sources(MouseMotionAnalyzerApp.class)

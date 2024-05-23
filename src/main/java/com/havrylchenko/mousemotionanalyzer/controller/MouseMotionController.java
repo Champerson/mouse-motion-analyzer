@@ -5,9 +5,8 @@ import javafx.scene.control.Label;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.stereotype.Component;
 
-
 @Component
-@FxmlView
+@FxmlView("mainScene.fxml")
 public class MouseMotionController {
     @FXML
     private Label welcomeText;

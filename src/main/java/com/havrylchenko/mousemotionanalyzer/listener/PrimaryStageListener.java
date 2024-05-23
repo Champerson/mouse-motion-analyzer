@@ -22,7 +22,7 @@ public class PrimaryStageListener implements ApplicationListener<StageReadyEvent
     @Override
     public void onApplicationEvent(StageReadyEvent event) {
         Stage stage = event.stage;
-        Scene scene = new Scene(fxWeaver.loadView(MouseMotionController.class), 800, 600);
+        Scene scene = new Scene(fxWeaver.loadView(MouseMotionController.class), 1200, 840);
         stage.setTitle("Welcome to Mouse Motion Analyzer");
         stage.setScene(scene);
         stage.show();
