@@ -6,24 +6,23 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-@NamedQuery(name = "User.findAllByRole", query = "select u from User u where u.login = :ROLE_USER")
-@NamedQuery(name = "User.findByUsername", query = "select u from User u where u.login = :login")
+@NamedQuery(name = "User.findAllByRole", query = "select u from User u where u.username = :ROLE_USER")
+@NamedQuery(name = "User.findByUsername", query = "select u from User u where u.username = :username")
 public class User {
 
     @Id
-    @Column(name = "user_id", unique = true, nullable = false)
+    @Column()
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "user_name", nullable = false, unique = true)
+    @Column()
     private String username;
-    @Column(name = "user_password")
+    @Column()
     private String password;
-    @Column(name = "user_role")
+    @Column()
     @Enumerated(EnumType.STRING)
     private UserRole role;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MotionStorage> motionStorage;
-
 
     public Long getId() {
         return id;
@@ -55,5 +54,13 @@ public class User {
 
     public void setRole(UserRole role) {
         this.role = role;
+    }
+
+    public List<MotionStorage> getMotionStorage() {
+        return motionStorage;
+    }
+
+    public void setMotionStorage(List<MotionStorage> motionStorage) {
+        this.motionStorage = motionStorage;
     }
 }

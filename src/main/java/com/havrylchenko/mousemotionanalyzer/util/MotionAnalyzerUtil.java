@@ -12,8 +12,8 @@ import java.util.Map;
 public class MotionAnalyzerUtil {
 
     private static Map<IntegerRange, Character> intervals = new HashMap<>();
-    private List<Character> upperCaseAlphabet;
-    private List<Character> lowerCaseAlphabet;
+    private List<Character> upperCaseAlphabet = new ArrayList<>();
+    private List<Character> lowerCaseAlphabet = new ArrayList<>();
 
     public MotionAnalyzerUtil() {
         setEnglishAlphabets();

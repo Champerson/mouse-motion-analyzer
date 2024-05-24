@@ -1,6 +1,6 @@
 package com.havrylchenko.mousemotionanalyzer.listener;
 
-import com.havrylchenko.mousemotionanalyzer.controller.MouseMotionController;
+import com.havrylchenko.mousemotionanalyzer.controller.MainSceneController;
 import com.havrylchenko.mousemotionanalyzer.event.StageReadyEvent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -22,7 +22,7 @@ public class PrimaryStageListener implements ApplicationListener<StageReadyEvent
     @Override
     public void onApplicationEvent(StageReadyEvent event) {
         Stage stage = event.stage;
-        Scene scene = new Scene(fxWeaver.loadView(MouseMotionController.class), 1200, 840);
+        Scene scene = new Scene(fxWeaver.loadView(MainSceneController.class), 600, 400);
         stage.setTitle("Welcome to Mouse Motion Analyzer");
         stage.setScene(scene);
         stage.show();

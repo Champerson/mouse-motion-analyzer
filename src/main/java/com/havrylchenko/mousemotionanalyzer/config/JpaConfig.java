@@ -43,6 +43,7 @@ public class JpaConfig {
         jpaProperties.put("hibernate.show_sql", "true");
         jpaProperties.put("hibernate.bytecode.provider", "bytebuddy");
 
+        entityManagerFactoryBean.setEntityManagerFactoryInterface(jakarta.persistence.EntityManagerFactory.class);
         entityManagerFactoryBean.setJpaProperties(jpaProperties);
 
         return entityManagerFactoryBean;

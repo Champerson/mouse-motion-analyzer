@@ -1,7 +1,7 @@
 module com.havrylchenko.mousemotionanalyzer {
+
     requires javafx.controls;
     requires javafx.fxml;
-
     requires org.controlsfx.controls;
     requires com.dlsc.formsfx;
     requires net.synedra.validatorfx;
@@ -31,44 +31,55 @@ module com.havrylchenko.mousemotionanalyzer {
     requires com.fasterxml.classmate;
     requires jakarta.xml.bind;
     requires net.bytebuddy;
-    //requires jakarta.cdi;
-    //requires org.hibernate.search.engine;
-    //requires org.hibernate.search.mapper.pojo;
-    //requires org.hibernate.search.util.common;
+    requires jakarta.cdi;
+    requires org.apache.commons.codec;
 
     opens com.havrylchenko.mousemotionanalyzer to
             javafx.fxml,
             spring.core,
+            org.hibernate.orm.core,
             net.rgielen.fxweaver.core,
             org.apache.commons.lang3;
 
     opens com.havrylchenko.mousemotionanalyzer.service to
             javafx.fxml,
             spring.core,
+            org.hibernate.orm.core,
             net.rgielen.fxweaver.core,
             org.apache.commons.lang3;
 
     opens com.havrylchenko.mousemotionanalyzer.controller to
             javafx.fxml,
             spring.core,
+            org.hibernate.orm.core,
             net.rgielen.fxweaver.core,
             org.apache.commons.lang3;
 
     opens com.havrylchenko.mousemotionanalyzer.listener to
             javafx.fxml,
             spring.core,
+            org.hibernate.orm.core,
             net.rgielen.fxweaver.core,
             org.apache.commons.lang3;
 
     opens com.havrylchenko.mousemotionanalyzer.util to
             javafx.fxml,
             spring.core,
+            org.hibernate.orm.core,
             net.rgielen.fxweaver.core,
             org.apache.commons.lang3;
 
     opens com.havrylchenko.mousemotionanalyzer.config to
             javafx.fxml,
             spring.core,
+            org.hibernate.orm.core,
+            net.rgielen.fxweaver.core,
+            org.apache.commons.lang3;
+
+    opens com.havrylchenko.mousemotionanalyzer.model to
+            javafx.fxml,
+            spring.core,
+            org.hibernate.orm.core,
             net.rgielen.fxweaver.core,
             org.apache.commons.lang3;
 

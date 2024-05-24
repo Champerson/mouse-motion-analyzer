@@ -3,6 +3,7 @@ package com.havrylchenko.mousemotionanalyzer.service;
 import com.havrylchenko.mousemotionanalyzer.listener.GlobalMouseListener;
 import com.havrylchenko.mousemotionanalyzer.model.User;
 import com.havrylchenko.mousemotionanalyzer.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,13 +15,14 @@ public class UserService {
     private UserRepository userRepository;
     private GlobalMouseListener globalMouseListener;
 
-
-    public void startMotionCapturing() {
-
+    @Autowired
+    public UserService(UserRepository userRepository, GlobalMouseListener globalMouseListener) {
+        this.userRepository = userRepository;
+        this.globalMouseListener = globalMouseListener;
     }
 
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public void startMotionCapturing() {
+        globalMouseListener.startMouseMotionCapture();
     }
 
     public List<User> findAllUsers() {
@@ -31,12 +33,8 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
+    @Transactional
     public User createUser(User user) {
         return userRepository.save(user);
-    }
-
-    @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
     }
 }
