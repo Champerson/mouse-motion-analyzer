@@ -21,23 +21,27 @@ public class GlobalMouseListener implements NativeMouseInputListener {
     private List<Integer> coordinatesOfX = new ArrayList<>();
     private List<Integer> coordinatesOfY = new ArrayList<>();
 
+    @Override
     public void nativeMouseMoved(NativeMouseEvent e) {
         x = e.getX();
         y = e.getY();
     }
 
+    @Override
     public void nativeMouseDragged(NativeMouseEvent e) {
         x = e.getX();
         y = e.getY();
     }
 
     public MotionStorage startMouseMotionCapture(int time) {
-        resetCoordinates();
+//        resetCoordinates();
         cleanUp();
 
         try {
             if (GlobalScreen.isNativeHookRegistered()) {
                 GlobalScreen.unregisterNativeHook();
+                GlobalScreen.addNativeMouseListener(null);
+                GlobalScreen.addNativeMouseMotionListener(null);
             }
             GlobalScreen.registerNativeHook();
         } catch (NativeHookException ex) {
@@ -62,7 +66,7 @@ public class GlobalMouseListener implements NativeMouseInputListener {
         var derivativeY = calculateDerivativeList(coordinatesOfY);
 
         cleanUp();
-        resetCoordinates();
+//        resetCoordinates();
 
         var linguisticListX = convertDerivativesListToLingusticListByX(derivativeX);
         var linguisticListY = convertDerivativesListToLingusticListByY(derivativeY);
@@ -104,10 +108,10 @@ public class GlobalMouseListener implements NativeMouseInputListener {
         }, shutdownTime, TimeUnit.MINUTES);
     }
 
-    private void resetCoordinates() {
+/*    private void resetCoordinates() {
         x = 0;
         y = 0;
-    }
+    }*/
 
     private void cleanUp() {
         coordinatesOfX.clear();

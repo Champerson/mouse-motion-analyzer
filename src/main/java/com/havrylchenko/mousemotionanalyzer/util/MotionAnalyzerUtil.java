@@ -41,10 +41,25 @@ public class MotionAnalyzerUtil {
                 .toList();
     }
 
+    /*@
+      requires coordinatesList != null;
+      requires coordinatesList.size() > 1;
+      requires (\forall int i; 0 <= i && i < coordinatesList.size(); coordinatesList.get(i) >= Integer.MIN_VALUE && coordinatesList.get(i) <= Integer.MAX_VALUE);
+      ensures \result != null;
+      ensures \result.size() == (coordinatesList.size() / 2) || \result.size() == (coordinatesList.size() - 1) / 2;
+      ensures (\forall int i; 0 <= i && i < \result.size(); \result.get(i) >= 0 && \result.get(i) <= Integer.MAX_VALUE);
+    @*/
     public static List<Integer> calculateDerivativeList(List<Integer> coordinatesList) {
         int index = 0;
         List<Integer> derivitiveList = new ArrayList<>();
 
+    /*@
+      loop_invariant 0 <= index && index <= coordinatesList.size();
+      loop_invariant derivitiveList != null;
+      loop_invariant derivitiveList.size() == index / 2;
+      loop_invariant (\forall int i; 0 <= i && i < derivitiveList.size(); derivitiveList.get(i) >= 0 && derivitiveList.get(i) <= Integer.MAX_VALUE);
+      decreases coordinatesList.size() - index;
+    @*/
         while (index + 1 <= coordinatesList.size() - 1) {
             int derivative = Math.abs(coordinatesList.get(index + 1) - coordinatesList.get(index));
             derivitiveList.add(derivative);
@@ -76,7 +91,7 @@ public class MotionAnalyzerUtil {
         int sumOfSquares1 = calculateSumOfSquares(matrix1);
         int sumOfSquares2 = calculateSumOfSquares(matrix2);
 
-        int difference = Math.abs(sumOfSquares1 - sumOfSquares2);
+        int difference = Math.abs(sumOfSquares1 - sumOfSquares2) / 26;
 
         return Math.sqrt(difference);
     }
