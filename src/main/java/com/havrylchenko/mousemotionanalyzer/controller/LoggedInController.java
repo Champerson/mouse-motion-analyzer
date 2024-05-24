@@ -29,6 +29,8 @@ import static com.havrylchenko.mousemotionanalyzer.util.MotionAnalyzerUtil.creat
 public class LoggedInController implements Initializable {
 
     @Autowired
+    private FxWeaver fxWeaver;
+    @Autowired
     private UserService userService;
 
     @FXML
