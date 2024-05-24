@@ -29,8 +29,6 @@ import static com.havrylchenko.mousemotionanalyzer.util.MotionAnalyzerUtil.creat
 public class LoggedInController implements Initializable {
 
     @Autowired
-    private FxWeaver fxWeaver;
-    @Autowired
     private UserService userService;
 
     @FXML
@@ -63,6 +61,7 @@ public class LoggedInController implements Initializable {
 
     private void startNewDiagnostic() {
         userService.startMotionCapturing(username, 1);
+        populateMatricesPagination();
     }
 
     private void populateMatricesPagination() {
@@ -119,7 +118,8 @@ public class LoggedInController implements Initializable {
         } else {
             selectedMatrix2 = matrix;
             double result = compareMatrices(selectedMatrix1, selectedMatrix2);
-            compressionResultOfTwoMatricesLabel.setText("Compression result: " + result);
+            String roundedResult = String.format("%.2f", result);
+            compressionResultOfTwoMatricesLabel.setText("Compression result: " + roundedResult);
             compressionResultOfTwoMatricesLabel.setVisible(true);
             isFirstMatrixSelected = false;
             selectedMatrix1 = null;
