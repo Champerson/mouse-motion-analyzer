@@ -8,19 +8,16 @@ import com.havrylchenko.mousemotionanalyzer.model.MotionStorage;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
-import static com.havrylchenko.mousemotionanalyzer.util.MotionAnalyzerUtil.calculateDerivativeList;
-import static com.havrylchenko.mousemotionanalyzer.util.MotionAnalyzerUtil.convertDerivativesListToLingusticList;
+import static com.havrylchenko.mousemotionanalyzer.util.MotionAnalyzerUtil.*;
 
 @Component
 public class GlobalMouseListener implements NativeMouseInputListener {
 
 
-    private int x;
-    private int y;
+    private volatile int x;
+    private volatile int y;
     private List<Integer> coordinatesOfX = new ArrayList<>();
     private List<Integer> coordinatesOfY = new ArrayList<>();
 
@@ -34,8 +31,14 @@ public class GlobalMouseListener implements NativeMouseInputListener {
         y = e.getY();
     }
 
-    public MotionStorage startMouseMotionCapture() {
+    public MotionStorage startMouseMotionCapture(int time) {
+        resetCoordinates();
+        cleanUp();
+
         try {
+            if (GlobalScreen.isNativeHookRegistered()) {
+                GlobalScreen.unregisterNativeHook();
+            }
             GlobalScreen.registerNativeHook();
         } catch (NativeHookException ex) {
             System.err.println("There was a problem registering the native hook.");
@@ -44,45 +47,66 @@ public class GlobalMouseListener implements NativeMouseInputListener {
             System.exit(1);
         }
 
-        GlobalMouseListener globalMouseListener = new GlobalMouseListener();
+        GlobalScreen.addNativeMouseListener(this);
+        GlobalScreen.addNativeMouseMotionListener(this);
 
-        GlobalScreen.addNativeMouseListener(globalMouseListener);
-        GlobalScreen.addNativeMouseMotionListener(globalMouseListener);
+        Future<?> future = scheduleCaptureTime(time);
 
-        scheduleCaptureTime(1);
+        try {
+            future.get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
 
         var derivativeX = calculateDerivativeList(coordinatesOfX);
         var derivativeY = calculateDerivativeList(coordinatesOfY);
 
         cleanUp();
+        resetCoordinates();
 
-        var linguisticListX = convertDerivativesListToLingusticList(derivativeX);
-        var linguisticListY = convertDerivativesListToLingusticList(derivativeY);
+        var linguisticListX = convertDerivativesListToLingusticListByX(derivativeX);
+        var linguisticListY = convertDerivativesListToLingusticListByY(derivativeY);
 
-        return new MotionStorage(linguisticListX, linguisticListY);
+        MotionStorage motionStorage = new MotionStorage();
+        motionStorage.setCharacterListByX(linguisticListX);
+        motionStorage.setCharacterListByY(linguisticListY);
+
+        return motionStorage;
     }
 
-    private void scheduleCaptureTime(int shutdownTime) {
+    private Future<?> scheduleCaptureTime(int shutdownTime) {
         long initialDelay = 0;
         long period = 10;
 
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
         Runnable captureMouseMotionsTask = () -> {
-            coordinatesOfX.add(x);
-            coordinatesOfY.add(y);
+            synchronized (this) {
+                coordinatesOfX.add(x);
+                coordinatesOfY.add(y);
+            }
+
+            System.out.println("coordinates X: " + x + " Y: " + y);
         };
 
         scheduler.scheduleAtFixedRate(captureMouseMotionsTask, initialDelay, period, TimeUnit.MILLISECONDS);
 
-        scheduler.schedule(() -> {
+        return scheduler.schedule(() -> {
             scheduler.shutdown();
             try {
                 GlobalScreen.unregisterNativeHook();
             } catch (NativeHookException e) {
                 e.printStackTrace();
+            } finally {
+                GlobalScreen.removeNativeMouseListener(this);
+                GlobalScreen.removeNativeMouseMotionListener(this);
             }
         }, shutdownTime, TimeUnit.MINUTES);
+    }
+
+    private void resetCoordinates() {
+        x = 0;
+        y = 0;
     }
 
     private void cleanUp() {
@@ -90,35 +114,11 @@ public class GlobalMouseListener implements NativeMouseInputListener {
         coordinatesOfY.clear();
     }
 
-    public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
     public List<Integer> getCoordinatesOfX() {
         return coordinatesOfX;
     }
 
-    public void setCoordinatesOfX(List<Integer> coordinatesOfX) {
-        this.coordinatesOfX = coordinatesOfX;
-    }
-
     public List<Integer> getCoordinatesOfY() {
         return coordinatesOfY;
-    }
-
-    public void setCoordinatesOfY(List<Integer> coordinatesOfY) {
-        this.coordinatesOfY = coordinatesOfY;
     }
 }
